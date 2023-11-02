@@ -2,9 +2,12 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -31,18 +34,6 @@ class Handler extends ExceptionHandler
     }
 
     /**
-     * Determine if the exception handler response should be JSON.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Throwable  $e
-     * @return bool
-     */
-    protected function shouldReturnJson($request, Throwable $e)
-    {
-        return true;
-    }
-
-    /**
      * Render an exception into an HTTP response.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -54,9 +45,38 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $e)
     {
         if ($e instanceof ThrottleRequestsException) {
-            return response()->json(['message' => 'Too many requests'], Response::HTTP_TOO_MANY_REQUESTS);
+            return response()->json([
+                'message' => 'Too many requests'
+            ], Response::HTTP_TOO_MANY_REQUESTS);
+        }
+
+        if ($e instanceof ModelNotFoundException ||
+            $e instanceof RouteNotFoundException ||
+            $e instanceof NotFoundHttpException)
+        {
+            return response()->json([
+                'error' => 'Resource not found'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        if ($e instanceof \TypeError) {
+            return response()->json([
+                'error' => 'Error'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return parent::render($request, $e);
+    }
+
+    /**
+     * Determine if the exception handler response should be JSON.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Throwable  $e
+     * @return bool
+     */
+    protected function shouldReturnJson($request, Throwable $e)
+    {
+        return true;
     }
 }
