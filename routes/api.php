@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\TripController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,5 +23,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
     Route::apiResource('users', UserController::class);
+    Route::apiResource('trips', TripController::class);
     //Route::get('/users/{page?}', [UserController::class, 'index']);
 });
