@@ -26,6 +26,10 @@
 - `docker-compose up -d`
 - `docker-compose exec php bash`
 
+### Booking API
+- https://documenter.getpostman.com/view/23470282/2s9YXe6PC7
+- read: ma-booking-api.pdf
+
 # Notes
 
 ### Basic docker compose commands
