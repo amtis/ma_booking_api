@@ -1,0 +1,77 @@
+version: '3'
+
+services:
+
+    ####################################################################################################
+    # PHP
+    ####################################################################################################
+    php:
+        container_name: ma_booking_api_php
+        build: .docker/php
+        ports:
+            - 5173:5173
+        volumes:
+            - .:/var/www:cached
+
+    ####################################################################################################
+    # Nginx
+    ####################################################################################################
+    nginx:
+        container_name: ma_booking_api_nginx
+        image: nginx
+        ports:
+            - 280:80
+        volumes:
+            - .:/var/www
+            - .docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - .docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+        depends_on:
+            - php
+
+    ####################################################################################################
+    # DATABASE (MySQL)
+    ####################################################################################################
+    db:
+        container_name: ma_booking_api_mysql
+        image: mysql:8.1
+        ports:
+            - 33060:3306
+        volumes:
+            - .docker/db/data:/var/lib/mysql
+            - .docker/logs:/var/log/mysql
+            - .docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+            - .docker/db/sql:/docker-entrypoint-initdb.d
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: ma_booking_api
+            MYSQL_USER: ma_booking_api_db_user
+            MYSQL_PASSWORD: ma_booking_api_db_pass
+
+    # ####################################################################################################
+    # # DATABASE (MariaDB)
+    # ####################################################################################################
+    # db:
+    #     container_name: ma_booking_api_mariadb
+    #     image: mariadb:10.11
+    #     ports:
+    #         - 3306:3306
+    #     volumes:
+    #         - .docker/db/data:/var/lib/mysql
+    #         - .docker/logs:/var/log/mysql
+    #         - .docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+    #         - .docker/db/sql:/docker-entrypoint-initdb.d
+    #     environment:
+    #         MYSQL_ROOT_PASSWORD: root
+    #         MYSQL_DATABASE: ma_booking_api
+    #         MYSQL_USER: ma_booking_api_db_user
+    #         MYSQL_PASSWORD: ma_booking_api_db_pass
+
+    ####################################################################################################
+    # Mailpit
+    ####################################################################################################
+    mail:
+        container_name: ma_booking_api_mailpit
+        image: axllent/mailpit:latest
+        ports:
+        - 8025:8025
+        - 1025:1025
