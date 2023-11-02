@@ -43,7 +43,7 @@ class UserController extends Controller
      * @param int $userId
      * @return JsonResponse
      */
-    public function show(int $userId)
+    public function show(int $userId): JsonResponse
     {
         return $this->userService->showUser($userId);
     }
@@ -56,10 +56,7 @@ class UserController extends Controller
      */
     public function update(AddEditUserRequest $request): JsonResponse
     {
-        if ($this->userService->updateUser($request) === true) {
-            return $this->generalOkMessage('The user was successfully updated.');
-        }
-        return $this->serverErrorMessage(['message' => 'User registration error.']);
+        return $this->userService->updateUser($request);
     }
 
     /**
@@ -70,9 +67,6 @@ class UserController extends Controller
      */
     public function destroy(AddEditUserRequest $request): JsonResponse
     {
-        if ($this->userService->deleteUser($request)) {
-            return $this->generalOkMessage('The user was successfully deleted.');
-        }
-        return $this->serverErrorMessage(['message' => 'User registration error.']);
+        return $this->userService->deleteUser($request);
     }
 }

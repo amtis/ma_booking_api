@@ -69,7 +69,7 @@ class TripService implements TripServiceInterface
     public function updateTrip(Request $request): JsonResponse
     {
         try {
-            $trip = Trip::where('id', $request->input('id'))->firstOrFail();
+            $trip = Trip::where('id', $request->input('id'))->first();
             $trip->update([
                 'slug' => $request->input('slug'),
                 'title' => $request->input('title'),
