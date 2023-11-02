@@ -14,14 +14,7 @@ class UserService implements UserServiceInterface
 
     public function listUsers(): JsonResponse
     {
-        $users = User::select(
-            'id',
-            'first_name',
-            'last_name',
-            'email'
-        )->paginate();
-
-        return UserResource::collection($users)->response();
+        return UserResource::collection(User::paginate())->response();
     }
 
     public function showUser(int $userId): JsonResponse
