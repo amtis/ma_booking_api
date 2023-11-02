@@ -14,7 +14,7 @@ interface UserServiceInterface
 
     public function createUser(Request $request): ?object;
 
-    public function updateUser(Request $request): bool;
+    public function updateUser(Request $request): JsonResponse;
 
-    public function deleteUser(Request $request): bool;
+    public function deleteUser(Request $request): JsonResponse;
 }

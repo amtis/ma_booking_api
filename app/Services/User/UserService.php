@@ -2,24 +2,19 @@
 
 namespace App\Services\User;
 
-use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
+use App\Traits\ApiResponses;
 
 class UserService implements UserServiceInterface
 {
+    use ApiResponses;
+
     public function listUsers(): JsonResponse
     {
-        $users = User::select(
-            'id',
-            'first_name',
-            'last_name',
-            'email'
-        )->paginate();
-
-        return (new UserCollection($users))->response();
+        return UserResource::collection(User::paginate())->response();
     }
 
     public function showUser(int $userId): JsonResponse
@@ -43,29 +38,31 @@ class UserService implements UserServiceInterface
         }
     }
 
-    public function updateUser($request): bool
+    public function updateUser($request): JsonResponse
     {
-        $user = User::where('id', $request->input('user_id'))->firstOrFail();
         try {
+            $user = User::where('id', $request->input('user_id'))->first();
             $user->first_name = $request->input('first_name');
             $user->last_name = $request->input('last_name');
+            if ($request->has('password')) {
+                $user->password = Hash::make($request->input('password'));
+            }
             $user->save();
-            return true;
+            return (new UserResource($user))->response();
         } catch (\Throwable $e) {
             report($e);
-            return false;
+            return $this->serverErrorMessage(['Server error']);
         }
     }
 
-    public function deleteUser($request): bool
+    public function deleteUser($request): JsonResponse
     {
-        $user = User::where('id', $request->input('user_id'))->firstOrFail();
         try {
-            $user->delete();
-            return true;
+            User::where('id', $request->input('user_id'))->delete();
+            return $this->generalOkMessage('User was deleted!');
         } catch (\Throwable $e) {
             report($e);
-            return false;
+            return $this->serverErrorMessage(['Server error']);
         }
     }
 }
