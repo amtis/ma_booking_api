@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\Booking\BookingService;
+use App\Services\Booking\BookingServiceInterface;
 use App\Services\Trip\TripService;
 use App\Services\Trip\TripServiceInterface;
 use App\Services\User\UserService;
@@ -17,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(UserServiceInterface::class, UserService::class);
         $this->app->bind(TripServiceInterface::class, TripService::class);
+        $this->app->bind(BookingServiceInterface::class, BookingService::class);
     }
 
     /**
