@@ -12,7 +12,7 @@ trait ApiResponses
         return response()->json($message, $status);
     }
 
-    public function responseAccessToken(string $token, string $type = 'Bearer'): JsonResponse
+    public function sendAccessToken(string $token, string $type = 'Bearer'): JsonResponse
     {
         return response()->json([
             'access_token' => $token,

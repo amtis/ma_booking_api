@@ -2,7 +2,7 @@
 
 namespace App\Services\User;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -17,4 +17,6 @@ interface UserServiceInterface
     public function updateUser(Request $request): JsonResponse;
 
     public function deleteUser(Request $request): JsonResponse;
+
+    public function createAccessToken(?object $user, ?string $email = ''): string;
 }
