@@ -65,4 +65,15 @@ class UserService implements UserServiceInterface
             return $this->serverErrorMessage(['Server error']);
         }
     }
+
+    public function createAccessToken(?object $user, ?string $email = ''): string
+    {
+        if (!is_null($user)) {
+            goto end_return;
+        }
+        $user = User::where('email', $email)->firstOrFail();
+
+        end_return:
+        return  $user->createToken('auth_token')->plainTextToken;
+    }
 }

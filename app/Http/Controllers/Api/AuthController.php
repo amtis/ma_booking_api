@@ -31,9 +31,7 @@ class AuthController extends Controller
             return $this->serverErrorMessage(['message' => 'User registration error.']);
         }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return $this->responseAccessToken($token);
+        return $this->sendAccessToken($this->userService->createAccessToken($user));
     }
 
     /**
@@ -48,10 +46,9 @@ class AuthController extends Controller
             return $this->unauthenticatedErrorMessage(['message' => 'Invalid login details']);
         }
 
-        $user = User::where('email', $request['email'])->firstOrFail();
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return $this->responseAccessToken($token);
+        return $this->sendAccessToken(
+            $this->userService->createAccessToken(null, $request->input('email'))
+        );
     }
 
     /**
