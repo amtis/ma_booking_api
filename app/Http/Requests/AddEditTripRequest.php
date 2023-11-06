@@ -35,7 +35,7 @@ class AddEditTripRequest extends FormRequest
             'start_date' => 'required|date_format:Y-m-d',
             'end_date' => 'required|date_format:Y-m-d',
             'location' => 'required|max:255',
-            'price' => 'required|numeric'
+            'price' => 'required|numeric|between:0,99999.99'
         ];
 
         if ($this->method() === 'PUT') {
